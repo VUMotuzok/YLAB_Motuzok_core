@@ -2,31 +2,48 @@ package task1;
 
 import java.util.Arrays;
 
-public class Homework1 {
+public class Main {
     public static void main(String[] args) {
-        int[] array = arrayRandom(15);
-        System.out.println(Arrays.toString(array));
-        System.out.println("Maximum number = " + numberMax(array)); //вывод макисимального значения из массива
-
+        int[][] array = new int[3][3];
+        fill(array);
+        System.out.println(Arrays.deepToString(array));
+        System.out.println("Maximum number = " + max(array));
+        System.out.println("Maximum number = " + min(array));
+        System.out.println("Maximum number = " + avg(array));
     }
 
-    //Задача 1. Заполните массив случайным числами и выведите максимальное,
-    // минимальное и среднее значение.
-    public static int[] arrayRandom(int arrayLength) {
-        int[] array = new int[arrayLength];
-        for (int i = 0; i < arrayLength; i++) {
-            array[i] = (int) (Math.random() * arrayLength);
-        }
-        return array;
+
+    public static void fill(int[][] arr) {
+        for (int i = 0; i < arr.length; i++)
+            for (int j = 0; j < arr[i].length; j++)
+                arr[i][j] = (int) (Math.random() * 50 - 1);
     }
 
-    public static int numberMax(int[] array) {
-        int resultMax = array[0];
-        for (int i : array) {
-            if (i > resultMax) {
-            }
-                resultMax = i;
-            }
-        return resultMax;
+
+    public static int max(int[][] arr) {
+        var max = Integer.MIN_VALUE;
+        for (int[] ints : arr)
+            for (int anInt : ints)
+                if (anInt > max)
+                    max = anInt;
+        return max;
+    }
+
+    public static int min(int[][] arr) {
+        var min = Integer.MAX_VALUE;
+        for (int[] ints : arr)
+            for (int anInt : ints)
+                if (anInt < min)
+                    min = anInt;
+        return min;
+    }
+
+    public static double avg(int[][] arr) {
+        int sum = 0;
+        var n = arr.length * arr[0].length;
+        for (int[] ints : arr)
+            for (int anInt : ints)
+                sum += anInt;
+        return (sum + 0.) / n;
     }
 }
