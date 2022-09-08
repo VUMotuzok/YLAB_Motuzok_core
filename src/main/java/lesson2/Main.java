@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 public class Main {
     private static Person[] RAW_DATA = new Person[]{
             new Person(0, "Harry"),
-            new Person(0, "Harry"), // дубликат
-            new Person(1, "Harry"), // тёзка
+            new Person(0, "Harry"),
+            new Person(1, "Harry"),
             new Person(2, "Harry"),
             new Person(3, "Emily"),
             new Person(4, "Jack"),
@@ -32,16 +32,13 @@ public class Main {
         System.out.println("Duplicate filtered, grouped by name, sorted by name and id:");
         System.out.println();
 
-        Map<Object, Long> groupingMap = Arrays.stream(RAW_DATA).distinct()
-                .collect(Collectors.groupingBy(Person::getName, Collectors.counting()));
-        Set<Map.Entry<Object, Long>> entry = groupingMap.entrySet();
-        for (Map.Entry<Object, Long> objectLongEntry : entry) {
-            System.out.println("Key: " + objectLongEntry.getKey() + "\nValue:" + objectLongEntry.getValue());
-        }
+        Arrays.stream(Optional.of(RAW_DATA).orElseThrow(NullPointerException::new)).distinct().sorted(Comparator.comparing(Person::getId).thenComparing(Person::getName))
+                .collect(Collectors.groupingBy(Person::getName, Collectors.counting()))
+                .forEach((k, v) -> System.out.printf("Key: %s\nValue:%d\n", k, v));
+
         System.out.println("**************************************************");
 
-        List<Integer> listToCheck = Arrays.asList(3, 4, 2, 7);
-        System.out.println("Pair of numbers with sum 10" + findPairOfNumbers(listToCheck, 10));
+        System.out.println("Pair of numbers with sum 10" + findPairOfNumbers(Arrays.asList(3, 4, 2, 7), 10));
 
         System.out.println("**************************************************");
         System.out.println("Fuzzy search function done:");
@@ -56,28 +53,27 @@ public class Main {
 
     }
 
-    private static boolean fuzzySearch(String expected, String stringToSearch) {
-        String[] array = Arrays.stream(expected.split("")).distinct().toArray(String[]::new);
-        String[] array2 = stringToSearch.split("");
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < array2.length; i++) {
-            for (int j = 0; j < array.length; j++) {
-                if (array[j].equals(array2[i])) {
-                    str.append(array2[i]);
-                }
+    public static boolean fuzzySearch(String expected, String stringToSearch) {
+        int index = 0;
+        for (int i = 0; i < stringToSearch.length(); i++) {
+            if (expected.charAt(index) == stringToSearch.charAt(i)) {
+                index++;
+            }
+            if (index == expected.length()) {
+                return true;
             }
         }
-        return expected.equals(str.toString());
+        return false;
     }
 
-    public static List<Integer> findPairOfNumbers(List<Integer> array, int expected) {
+    public static List<Integer> findPairOfNumbers(List<Integer> array, int sum) {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < array.size(); i++) {
             for (int j = 0; j < array.size(); j++) {
                 if (i == j) {
                     continue;
                 }
-                if (array.get(i) + array.get(j) == expected) {
+                if (array.get(i) + array.get(j) == sum) {
                     result.add(array.get(i));
                     result.add(array.get(j));
                     return result;
